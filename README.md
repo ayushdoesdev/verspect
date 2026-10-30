@@ -1,10 +1,16 @@
 # Verspect
 
-🔍 Dependency Intelligence for GitHub Repositories<br>
-📦 Understand Dependencies · 🛡️ Detect Risks · 📊 Analyze Package Health · 🔄 Simulate Upgrades · 🤖 AI-Assisted Migrations<br>
-🚀 **Know your dependencies. Understand your risks. Upgrade with confidence.**
+<p align="center">
+  <strong>🔍 Dependency intelligence for GitHub repositories</strong><br>
+  <em>Know your dependencies. Understand your risks. Upgrade with confidence.</em>
+</p>
 
-**Dependency intelligence for GitHub repositories.** Understand what your software depends on, where dependencies are used, which versions have security or license concerns, and what an upgrade could change before you decide to ship it.
+<p align="center">
+  📦 Dependencies · 🛡️ Risk detection · 📊 Package health<br>
+  🔄 Upgrade simulation · 🤖 AI-assisted migrations
+</p>
+
+Understand what your software depends on, where dependencies are used, which versions have security or license concerns, and what an upgrade could change before you decide to ship it.
 
 Verspect combines a public marketing site with interactive product demonstrations and a self-hostable application built from a Next.js frontend, FastAPI API, PostgreSQL database, Redis broker, and Celery workers. Analysis is evidence-led: unsupported or uncertain findings remain unresolved instead of being presented as facts.
 
