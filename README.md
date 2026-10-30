@@ -14,13 +14,22 @@ Understand what your software depends on, where dependencies are used, which ver
 
 Verspect combines a public marketing site with interactive product demonstrations and a self-hostable application built from a Next.js frontend, FastAPI API, PostgreSQL database, Redis broker, and Celery workers. Analysis is evidence-led: unsupported or uncertain findings remain unresolved instead of being presented as facts.
 
+### 🏠 Deployment: Self-hosted
+
+Verspect is currently a self-hosted application; no official hosted SaaS service is provided. Developers and organizations can run it on their own infrastructure.
+
+- Recommended local deployment: [Docker Compose quick start](#quick-start-with-docker-compose).
+- AI integrations are optional.
+
 ![Python 3.13](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)
 ![Next.js 15](https://img.shields.io/badge/Next.js-15-000000?logo=next.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
 ![GitHub Actions workflow](https://img.shields.io/badge/GitHub_Actions-CI_workflow-2088FF?logo=githubactions&logoColor=white)
-[![License: AGPL v3 or later](https://img.shields.io/badge/License-AGPL--3.0--or--later-blue.svg)](LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 
-> **License:** Verspect original code, website, documentation, and original project assets are licensed under [AGPL-3.0-or-later](LICENSE). Third-party components retain their own terms; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). The Verspect name, logo, and official branding are reserved project branding and are not granted by the software license.
+> **Current license:** Original Verspect code, the website, documentation, and original project assets are licensed under [Apache-2.0](LICENSE). Third-party dependencies retain their own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+>
+> Companies should review the [full license](LICENSE) and their own compliance requirements before adopting or deploying Verspect.
 
 ## What Verspect does
 
@@ -343,6 +352,14 @@ PostgreSQL and Redis use named persistent volumes. The `scan_repos` volume store
 
 Production requires `APP_ENV`, `APP_DEBUG`, `APP_URL`, `API_URL`, `SECRET_KEY`, `ALLOWED_HOSTS`, `POSTGRES_PASSWORD`, `REDIS_PASSWORD`, GitHub OAuth settings, `GITHUB_WEBHOOK_SECRET`, `SMTP_HOST`, `NEXT_PUBLIC_APP_URL`, and `NEXT_PUBLIC_API_URL`. See the deployment guide for complete validation rules and optional integrations. Never paste secret values into tickets, logs, or documentation.
 
+## Deployment and licensing FAQ
+
+- **Is Verspect hosted?** No official hosted service is currently provided.
+- **Can I self-host it?** Yes. Use the [Docker Compose quick start](#quick-start-with-docker-compose).
+- **Can my company evaluate or use it commercially?** Yes, commercial use is permitted under Apache-2.0, subject to its terms and your organization's compliance review.
+- **Can we modify it and use our version internally?** Yes. Apache-2.0 does not require publishing modifications solely because they are used internally; review the license for terms that apply to distribution.
+- **Can I use another AI provider?** Yes. Supported providers are configurable, and AI is optional; see [AI providers and optional integrations](#ai-providers-and-optional-integrations).
+
 ## Security and privacy
 
 - Repository imports and analysis records are organization-scoped. Review [Security and data handling](docs/security.md) for authorization and token handling details.
@@ -378,8 +395,8 @@ Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, ch
 
 For bugs, include reproduction steps, expected and actual behavior, relevant versions, and redacted logs. For security issues, follow the private reporting process in [SECURITY.md](SECURITY.md).
 
-## License and project branding
+## License history and project branding
 
-Original Verspect code, the marketing website, documentation, and original project assets are licensed under [GNU Affero General Public License v3.0 or later](LICENSE) (`AGPL-3.0-or-later`). Third-party software and external resources keep their respective licenses; review [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+The existing [`v0.1.0-beta.1` release](https://github.com/ayushdoesdev/verspect/releases/tag/v0.1.0-beta.1) remains under its original AGPL-3.0-or-later license; the Apache-2.0 change applies going forward and does not retroactively relicense that release.
 
-The Verspect name, logo, and official branding are reserved project branding. The software license does not grant trademark or branding rights.
+The Verspect name, logo, and official branding are reserved project branding. Apache-2.0 grants no trademark rights and does not imply endorsement of third-party forks.

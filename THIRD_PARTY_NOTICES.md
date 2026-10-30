@@ -1,6 +1,6 @@
 # Third-party notices
 
-The AGPL-3.0-or-later license in [`LICENSE`](LICENSE) applies to original Verspect work. It does not replace the licenses of third-party software, fonts, or other materials listed here. Preserve each upstream notice when redistributing the corresponding component.
+The Apache-2.0 license in [`LICENSE`](LICENSE) applies to original Verspect work in the current repository. It does not replace the licenses of third-party software, fonts, or other materials listed here. Preserve each upstream notice when redistributing the corresponding component. The `v0.1.0-beta.1` release remains under its original AGPL-3.0-or-later license.
 
 ## Frontend npm dependencies
 
