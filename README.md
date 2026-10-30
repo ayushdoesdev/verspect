@@ -20,7 +20,29 @@ The marketing homepage includes interactive product demonstrations for scanning,
 
 ### Product visuals
 
-Screenshots are not included yet. The feedback screenshot is excluded from backend build contexts and `git archive` exports because redistribution permission is unknown; the local file is preserved. Its Git tracking state cannot be verified in this checkout. Dashboard screenshots require a synthetic, authenticated organization and repository dataset; no seed/demo workflow was found. No screenshot or product UI has been fabricated for this README. No verified logo or banner asset was found, so this README uses a text masthead.
+The following screenshots were captured from the actual Verspect marketing homepage running locally in Chrome at a 1600-pixel desktop viewport. The scan, upgrade simulator, and migration assistant are interactive marketing demonstrations with illustrative example state; these screenshots do not show results from a live backend, signed-in account, or scanned repository. The captures use the site’s reduced-motion presentation so the demo states remain stable in the images.
+
+**Landing page — hero and initial viewport**
+
+![Verspect marketing homepage hero and initial desktop viewport](docs/assets/screenshots/landing-hero.png)
+
+**Landing page — full page**
+
+![Full-page screenshot of the Verspect marketing homepage and its product demonstration sections](docs/assets/screenshots/landing-full-page.png)
+
+**Repository scan demonstration**
+
+![Marketing scan demo showing example GitHub import, indexing, dependency detection, security analysis, and upgrade analysis](docs/assets/screenshots/scan-demonstration.png)
+
+**Upgrade simulator demonstration**
+
+![Marketing upgrade simulator demo showing example Django versions, breaking API findings, risk indicators, and migration summary](docs/assets/screenshots/upgrade-simulator-demonstration.png)
+
+**Migration assistant demonstration**
+
+![Marketing migration assistant demo showing an example Django code change, side-by-side patch, and confidence score](docs/assets/screenshots/migration-assistant-demonstration.png)
+
+These are marketing-page demonstrations, not authenticated application screenshots. No dashboard or private repository screenshots are included. The feedback screenshot is excluded from backend build contexts and `git archive` exports because redistribution permission is unknown; the local file is preserved. No additional logo or banner image has been added.
 
 ## Features and maturity
 
