@@ -20,25 +20,58 @@ The marketing homepage includes interactive demonstrations for scanning, upgrade
 
 ## Product visuals
 
-**Verspect — Dependency intelligence for GitHub repositories**
+The application screenshots show Verspect running locally with authenticated access and data from a public repository scan. The marketing-page demonstrations use illustrative example state and are shown separately below.
 
-<p><a href="docs/assets/screenshots/landing-hero.png"><img src="docs/assets/screenshots/landing-hero.png" alt="Verspect marketing homepage hero and initial viewport" width="100%" /></a></p>
+**Authenticated dashboard**
 
-**See upgrade risks before changing dependencies**
+<p><a href="docs/assets/screenshots/app/dashboard-overview.png"><img src="docs/assets/screenshots/app/dashboard-overview.png" alt="Authenticated Verspect dashboard with repository, dependency, outdated package, vulnerability, and health summaries" width="100%" /></a></p>
 
-<p><a href="docs/assets/screenshots/upgrade-simulator-demonstration.png"><img src="docs/assets/screenshots/upgrade-simulator-demonstration.png" alt="Upgrade simulator showing example Django upgrade risks, breaking API findings, and migration summary" width="100%" /></a></p>
+**Repository dependency overview**
+
+<p><a href="docs/assets/screenshots/app/repository-inventory.png"><img src="docs/assets/screenshots/app/repository-inventory.png" alt="Scanned repository overview showing dependency counts, risk insights, and recommended upgrades" width="100%" /></a></p>
 
 <details>
-  <summary>Explore more screenshots</summary>
+  <summary>Explore more authenticated application screenshots</summary>
+
+  **Security findings**
+
+  <p><a href="docs/assets/screenshots/app/security-findings.png"><img src="docs/assets/screenshots/app/security-findings.png" alt="Security page with OSV coverage and vulnerability findings for scanned packages" width="100%" /></a></p>
+
+  **Dependency graph and inventory**
+
+  <p><a href="docs/assets/screenshots/app/dependency-graph.png"><img src="docs/assets/screenshots/app/dependency-graph.png" alt="Repository dependency graph showing package relationships from lockfile analysis alongside package versions, licenses, status, and risk" width="100%" /></a></p>
+
+  **Package health and upgrade advice**
+
+  <p><a href="docs/assets/screenshots/app/dependency-analysis-detail.png"><img src="docs/assets/screenshots/app/dependency-analysis-detail.png" alt="Dependency detail page with health factors, upgrade advice, and the upgrade simulator running against a scanned package" width="100%" /></a></p>
+
+  **Migration Assistant package selection**
+
+  <p><a href="docs/assets/screenshots/app/migration-assistant.png"><img src="docs/assets/screenshots/app/migration-assistant.png" alt="Authenticated Migration Assistant page listing scanned dependencies available to open for migration analysis" width="100%" /></a></p>
+</details>
+
+<details>
+  <summary>Marketing website and interactive demos</summary>
+
+  **Landing page — hero**
+
+  <p><a href="docs/assets/screenshots/landing-hero.png"><img src="docs/assets/screenshots/landing-hero.png" alt="Verspect marketing homepage hero and initial viewport" width="100%" /></a></p>
+
+  **Landing page — full page** · <a href="docs/assets/screenshots/landing-full-page.png">Open the full-page screenshot</a>
 
   <p><a href="docs/assets/screenshots/landing-full-page.png"><img src="docs/assets/screenshots/landing-full-page.png" alt="Full-page capture of the Verspect marketing site and its demonstration sections" width="100%" /></a></p>
-  <p><strong>Full marketing homepage</strong> · <a href="docs/assets/screenshots/landing-full-page.png">Open the full-page screenshot</a></p>
 
-  <p><strong>Repository scan demonstration</strong><br />
-  <a href="docs/assets/screenshots/scan-demonstration.png"><img src="docs/assets/screenshots/scan-demonstration.png" alt="Example repository scan demo showing import, indexing, dependency detection, security analysis, and upgrade analysis" width="100%" /></a></p>
+  **Repository scan demonstration**
 
-  <p><strong>Migration assistant demonstration</strong><br />
-  <a href="docs/assets/screenshots/migration-assistant-demonstration.png"><img src="docs/assets/screenshots/migration-assistant-demonstration.png" alt="Example migration assistant demo with a Django code change, side-by-side patch, and confidence score" width="100%" /></a></p>
+  <p><a href="docs/assets/screenshots/scan-demonstration.png"><img src="docs/assets/screenshots/scan-demonstration.png" alt="Marketing scan demonstration showing example repository import, indexing, dependency detection, security analysis, and upgrade analysis" width="100%" /></a></p>
+
+  **Upgrade simulator demonstration**
+
+  <p><a href="docs/assets/screenshots/upgrade-simulator-demonstration.png"><img src="docs/assets/screenshots/upgrade-simulator-demonstration.png" alt="Marketing upgrade simulator demonstration with illustrative Django upgrade risks and migration summary" width="100%" /></a></p>
+
+  **Migration assistant demonstration**
+
+  <p><a href="docs/assets/screenshots/migration-assistant-demonstration.png"><img src="docs/assets/screenshots/migration-assistant-demonstration.png" alt="Marketing migration assistant demonstration showing an example code change, patch, and confidence score" width="100%" /></a></p>
 </details>
 
 ## Features and maturity
