@@ -16,33 +16,48 @@ Verspect combines a public marketing site with interactive product demonstration
 
 Connect a GitHub repository, scan supported dependency manifests and lockfiles, and inspect the resulting inventory, usage, dependency relationships, vulnerability matches, license data, and observed package health. When you consider an upgrade, Verspect can compare it with detected usage and migration knowledge. AI providers are optional and are used for semantic assistance where deterministic rules do not provide an answer.
 
-The marketing homepage includes interactive product demonstrations for scanning, upgrade simulation, and migration assistance. These demonstrations use example presentation state; they are not connected to a live Verspect account or backend.
+The marketing homepage includes interactive demonstrations for scanning, upgrade simulation, and migration assistance.
 
-### Product visuals
+## Product visuals
 
-The following screenshots were captured from the actual Verspect marketing homepage running locally in Chrome at a 1600-pixel desktop viewport. The scan, upgrade simulator, and migration assistant are interactive marketing demonstrations with illustrative example state; these screenshots do not show results from a live backend, signed-in account, or scanned repository. The captures use the site’s reduced-motion presentation so the demo states remain stable in the images.
+Marketing demonstrations use illustrative example data. They are not authenticated live application results and do not imply a hosted service.
 
-**Landing page — hero and initial viewport**
+<table>
+  <tbody>
+    <tr>
+      <td width="50%" valign="top" align="center">
+        <img src="docs/assets/screenshots/landing-hero.png" alt="Verspect marketing homepage hero and initial viewport" width="100%" />
+        <br /><strong>Verspect — Dependency intelligence for GitHub repositories</strong>
+      </td>
+      <td width="50%" valign="top" align="center">
+        <img src="docs/assets/screenshots/upgrade-simulator-demonstration.png" alt="Upgrade simulator showing example Django upgrade risks, breaking API findings, and migration summary" width="100%" />
+        <br /><strong>See upgrade risks before changing dependencies</strong>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
-![Verspect marketing homepage hero and initial desktop viewport](docs/assets/screenshots/landing-hero.png)
+<details>
+  <summary>Explore more screenshots</summary>
 
-**Landing page — full page**
+  <p><img src="docs/assets/screenshots/landing-full-page.png" alt="Full-page capture of the Verspect marketing site and its demonstration sections" width="100%" /></p>
+  <p align="center"><strong>Full Verspect marketing homepage</strong></p>
 
-![Full-page screenshot of the Verspect marketing homepage and its product demonstration sections](docs/assets/screenshots/landing-full-page.png)
-
-**Repository scan demonstration**
-
-![Marketing scan demo showing example GitHub import, indexing, dependency detection, security analysis, and upgrade analysis](docs/assets/screenshots/scan-demonstration.png)
-
-**Upgrade simulator demonstration**
-
-![Marketing upgrade simulator demo showing example Django versions, breaking API findings, risk indicators, and migration summary](docs/assets/screenshots/upgrade-simulator-demonstration.png)
-
-**Migration assistant demonstration**
-
-![Marketing migration assistant demo showing an example Django code change, side-by-side patch, and confidence score](docs/assets/screenshots/migration-assistant-demonstration.png)
-
-These are marketing-page demonstrations, not authenticated application screenshots. No dashboard or private repository screenshots are included. The feedback screenshot is excluded from backend build contexts and `git archive` exports because redistribution permission is unknown; the local file is preserved. No additional logo or banner image has been added.
+  <table>
+    <tbody>
+      <tr>
+        <td width="50%" valign="top" align="center">
+          <img src="docs/assets/screenshots/scan-demonstration.png" alt="Example repository scan demo showing import, indexing, dependency detection, security analysis, and upgrade analysis" width="100%" />
+          <br /><strong>Repository scan demonstration</strong>
+        </td>
+        <td width="50%" valign="top" align="center">
+          <img src="docs/assets/screenshots/migration-assistant-demonstration.png" alt="Example migration assistant demo with a Django code change, side-by-side patch, and confidence score" width="100%" />
+          <br /><strong>Migration assistant demonstration</strong>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</details>
 
 ## Features and maturity
 
