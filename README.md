@@ -20,43 +20,25 @@ The marketing homepage includes interactive demonstrations for scanning, upgrade
 
 ## Product visuals
 
-Marketing demonstrations use illustrative example data. They are not authenticated live application results and do not imply a hosted service.
+**Verspect — Dependency intelligence for GitHub repositories**
 
-<table>
-  <tbody>
-    <tr>
-      <td width="50%" valign="top" align="center">
-        <img src="docs/assets/screenshots/landing-hero.png" alt="Verspect marketing homepage hero and initial viewport" width="100%" />
-        <br /><strong>Verspect — Dependency intelligence for GitHub repositories</strong>
-      </td>
-      <td width="50%" valign="top" align="center">
-        <img src="docs/assets/screenshots/upgrade-simulator-demonstration.png" alt="Upgrade simulator showing example Django upgrade risks, breaking API findings, and migration summary" width="100%" />
-        <br /><strong>See upgrade risks before changing dependencies</strong>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<p><a href="docs/assets/screenshots/landing-hero.png"><img src="docs/assets/screenshots/landing-hero.png" alt="Verspect marketing homepage hero and initial viewport" width="100%" /></a></p>
+
+**See upgrade risks before changing dependencies**
+
+<p><a href="docs/assets/screenshots/upgrade-simulator-demonstration.png"><img src="docs/assets/screenshots/upgrade-simulator-demonstration.png" alt="Upgrade simulator showing example Django upgrade risks, breaking API findings, and migration summary" width="100%" /></a></p>
 
 <details>
   <summary>Explore more screenshots</summary>
 
-  <p><img src="docs/assets/screenshots/landing-full-page.png" alt="Full-page capture of the Verspect marketing site and its demonstration sections" width="100%" /></p>
-  <p align="center"><strong>Full Verspect marketing homepage</strong></p>
+  <p><a href="docs/assets/screenshots/landing-full-page.png"><img src="docs/assets/screenshots/landing-full-page.png" alt="Full-page capture of the Verspect marketing site and its demonstration sections" width="100%" /></a></p>
+  <p><strong>Full marketing homepage</strong> · <a href="docs/assets/screenshots/landing-full-page.png">Open the full-page screenshot</a></p>
 
-  <table>
-    <tbody>
-      <tr>
-        <td width="50%" valign="top" align="center">
-          <img src="docs/assets/screenshots/scan-demonstration.png" alt="Example repository scan demo showing import, indexing, dependency detection, security analysis, and upgrade analysis" width="100%" />
-          <br /><strong>Repository scan demonstration</strong>
-        </td>
-        <td width="50%" valign="top" align="center">
-          <img src="docs/assets/screenshots/migration-assistant-demonstration.png" alt="Example migration assistant demo with a Django code change, side-by-side patch, and confidence score" width="100%" />
-          <br /><strong>Migration assistant demonstration</strong>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <p><strong>Repository scan demonstration</strong><br />
+  <a href="docs/assets/screenshots/scan-demonstration.png"><img src="docs/assets/screenshots/scan-demonstration.png" alt="Example repository scan demo showing import, indexing, dependency detection, security analysis, and upgrade analysis" width="100%" /></a></p>
+
+  <p><strong>Migration assistant demonstration</strong><br />
+  <a href="docs/assets/screenshots/migration-assistant-demonstration.png"><img src="docs/assets/screenshots/migration-assistant-demonstration.png" alt="Example migration assistant demo with a Django code change, side-by-side patch, and confidence score" width="100%" /></a></p>
 </details>
 
 ## Features and maturity
