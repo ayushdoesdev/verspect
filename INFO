@@ -1,0 +1,28 @@
+From the project root:
+
+```bash
+# Stop everything and delete the Postgres volume
+docker compose down -v
+
+# Start again (backend runs alembic upgrade on boot)
+docker compose up -d
+```
+
+`-v` removes named volumes including `postgres_data`, so you get an empty DB. Migrations apply when `backend` starts.
+
+If you only want to wipe Postgres (keep Redis/etc.):
+
+```bash
+docker compose stop backend worker beat
+docker compose rm -f postgres
+docker volume rm verspect_postgres_data   # name may be depintel_postgres_data — check with: docker volume ls | grep postgres
+docker compose up -d
+```
+
+Check the exact volume name with:
+
+```bash
+docker volume ls | grep postgres
+```
+
+Also clear the browser `localStorage` tokens (`access_token` / `refresh_token`) or you’ll stay “logged in” to a user that no longer exists.

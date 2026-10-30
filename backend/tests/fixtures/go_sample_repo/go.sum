@@ -1,0 +1,5 @@
+github.com/gin-gonic/gin v1.10.0 h1:fixture
+github.com/gin-gonic/gin v1.10.0/go.mod h1:fixturemod
+github.com/new/module v1.3.0 h1:replacement
+github.com/old/module v1.2.0/go.mod h1:oldmod
+golang.org/x/text v0.16.0 h1:textfixture

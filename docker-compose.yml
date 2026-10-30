@@ -1,0 +1,195 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: depintel-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-depintel}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-depintel_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-dependency_intelligence}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-depintel} -d ${POSTGRES_DB:-dependency_intelligence}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - depintel
+
+  redis:
+    image: redis:7-alpine
+    container_name: depintel-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - depintel
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: depintel-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD:-depintel_secret}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD:-depintel_secret}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      # Reach host Ollama from containers (Mac/Windows Docker Desktop + Linux host-gateway)
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3:8b}
+      LLM_TIMEOUT: ${LLM_TIMEOUT:-180}
+    volumes:
+      - ./backend:/app
+      - scan_repos:/tmp/depintel/repos
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - depintel
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+
+  worker:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    container_name: depintel-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD:-depintel_secret}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD:-depintel_secret}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3:8b}
+      LLM_TIMEOUT: ${LLM_TIMEOUT:-180}
+    volumes:
+      - ./backend:/app
+      - scan_repos:/tmp/depintel/repos
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    networks:
+      - depintel
+    command: >
+      celery -A app.core.celery_app worker
+      --loglevel=info
+      --concurrency=4
+      --queues=default,scans,analysis,notifications
+
+  beat:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    container_name: depintel-beat
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD:-depintel_secret}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD:-depintel_secret}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    volumes:
+      - ./backend:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+      worker:
+        condition: service_started
+    networks:
+      - depintel
+    command: celery -A app.core.celery_app beat --loglevel=info
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+    container_name: depintel-frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-change-me-nextauth-secret}
+      INTERNAL_API_URL: http://backend:8000
+      # Inherited by Next worker processes. Do not run `npm run build` in this
+      # live container — it races the webpack cache even with a separate distDir.
+      NEXT_DIST_DIR: .next-dev
+    volumes:
+      # Bind source for hot reload. Isolate Linux node_modules from the host.
+      # Dev cache is `.next-dev`. Do not persist `/app/.next`.
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - depintel
+    command: npm run dev
+
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: depintel-mailhog
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - depintel
+
+volumes:
+  postgres_data:
+  redis_data:
+  scan_repos:
+
+networks:
+  depintel:
+    driver: bridge

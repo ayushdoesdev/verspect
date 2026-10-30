@@ -1,0 +1,220 @@
+# Production-oriented stack. Do NOT use docker-compose.yml (dev) for customer traffic.
+#
+# Required env (via .env or environment):
+#   POSTGRES_PASSWORD, REDIS_PASSWORD, SECRET_KEY
+#   APP_URL, API_URL, NEXT_PUBLIC_APP_URL, NEXT_PUBLIC_API_URL
+#   GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, GITHUB_WEBHOOK_SECRET
+#   SMTP_HOST (not localhost / Mailhog)
+#   APP_ENV=production
+#
+# Usage:
+#   docker compose -f docker-compose.prod.yml up -d --build
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: verspect-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-depintel}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-dependency_intelligence}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    # Not published to the host — app network only.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-depintel} -d ${POSTGRES_DB:-dependency_intelligence}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - verspect
+
+  redis:
+    image: redis:7-alpine
+    container_name: verspect-redis
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --maxmemory
+      - 512mb
+      - --maxmemory-policy
+      - noeviction
+      - --requirepass
+      - ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli ping | grep PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - verspect
+
+  migrate:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: verspect-migrate
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - verspect
+    command: ["alembic", "upgrade", "head"]
+    restart: "no"
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: verspect-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      CELERY_BROKER_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      CELERY_RESULT_BACKEND: redis://:${REDIS_PASSWORD}@redis:6379/2
+    volumes:
+      - scan_repos:/tmp/depintel/repos
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - verspect
+    command:
+      - uvicorn
+      - app.main:app
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "8000"
+      - --workers
+      - "2"
+
+  worker:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    container_name: verspect-worker
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      CELERY_BROKER_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      CELERY_RESULT_BACKEND: redis://:${REDIS_PASSWORD}@redis:6379/2
+    volumes:
+      - scan_repos:/tmp/depintel/repos
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_healthy
+    networks:
+      - verspect
+    command:
+      - celery
+      - -A
+      - app.core.celery_app
+      - worker
+      - --loglevel=info
+      - --concurrency=4
+      - --queues=default,scans,analysis,notifications
+
+  beat:
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    container_name: verspect-beat
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      DATABASE_URL_SYNC: postgresql://${POSTGRES_USER:-depintel}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-dependency_intelligence}
+      REDIS_URL: redis://:${REDIS_PASSWORD}@redis:6379/0
+      CELERY_BROKER_URL: redis://:${REDIS_PASSWORD}@redis:6379/1
+      CELERY_RESULT_BACKEND: redis://:${REDIS_PASSWORD}@redis:6379/2
+    depends_on:
+      redis:
+        condition: service_healthy
+      worker:
+        condition: service_started
+    networks:
+      - verspect
+    command: ["celery", "-A", "app.core.celery_app", "beat", "--loglevel=info"]
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?NEXT_PUBLIC_API_URL is required}
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:?NEXT_PUBLIC_APP_URL is required}
+    container_name: verspect-frontend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:?NEXT_PUBLIC_API_URL is required}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:?NEXT_PUBLIC_APP_URL is required}
+      INTERNAL_API_URL: http://backend:8000
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+    ports:
+      - "3000:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - verspect
+    # Image CMD is `node server.js` (standalone). Do not bind-mount source.
+
+volumes:
+  postgres_data:
+  redis_data:
+  scan_repos:
+
+networks:
+  verspect:
+    driver: bridge

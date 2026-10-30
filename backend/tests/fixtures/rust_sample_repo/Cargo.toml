@@ -1,0 +1,11 @@
+[package]
+name = "verspect-rust-sample"
+version = "0.1.0"
+
+[dependencies]
+serde = "1.0"
+tokio = { version = "1.39", features = ["rt"] }
+renamed_rand = { package = "rand", version = "0.8" }
+
+[dev-dependencies]
+pretty_assertions = "1.4"

@@ -1,0 +1,10 @@
+{
+  "name": "verspect/php-sample",
+  "require": {
+    "monolog/monolog": "^3.7",
+    "guzzlehttp/guzzle": "^7.9"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^11.3"
+  }
+}

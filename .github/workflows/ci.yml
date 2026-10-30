@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run tests
+        env:
+          SECRET_KEY: test-secret-key-for-ci-only-32chars
+          DATABASE_URL: postgresql+asyncpg://depintel:depintel_secret@localhost:5432/dependency_intelligence
+          DATABASE_URL_SYNC: postgresql://depintel:depintel_secret@localhost:5432/dependency_intelligence
+        run: pytest -v --ignore=tests/api/test_health.py tests/scanners tests/services
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies
+        run: npm install
+      - name: Run unit tests
+        run: npm test
+      - name: Typecheck
+        run: npx tsc --noEmit

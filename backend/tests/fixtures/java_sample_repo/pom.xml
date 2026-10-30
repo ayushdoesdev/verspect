@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.verspect</groupId>
+  <artifactId>java-sample</artifactId>
+  <version>1.0.0</version>
+  <properties>
+    <guava.version>33.2.1-jre</guava.version>
+  </properties>
+  <licenses>
+    <license><name>Apache-2.0</name></license>
+  </licenses>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>3.14.0</version>
+      <scope>test</scope>
+      <licenses>
+        <license><name>Apache-2.0</name></license>
+      </licenses>
+    </dependency>
+  </dependencies>
+</project>

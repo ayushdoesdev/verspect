@@ -1,0 +1,31 @@
+version = 3
+
+[[package]]
+name = "verspect-rust-sample"
+version = "0.1.0"
+dependencies = [
+ "rand 0.8.5",
+ "serde",
+ "tokio",
+]
+
+[[package]]
+name = "serde"
+version = "1.0.204"
+
+[[package]]
+name = "tokio"
+version = "1.39.2"
+dependencies = ["pin-project-lite"]
+
+[[package]]
+name = "pin-project-lite"
+version = "0.2.14"
+
+[[package]]
+name = "rand"
+version = "0.8.5"
+
+[[package]]
+name = "pretty_assertions"
+version = "1.4.0"

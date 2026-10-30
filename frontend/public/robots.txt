@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /repositories
+Disallow: /dependencies
+Disallow: /settings
+Disallow: /billing
+Disallow: /team
+Disallow: /usage
+Disallow: /onboarding
+Disallow: /login
+Disallow: /signup
+
+Sitemap: https://dependencyintelligence.dev/sitemap.xml

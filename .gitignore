@@ -1,0 +1,72 @@
+# Dependencies / build
+node_modules/
+.next/
+dist/
+build/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Docker / local data
+scan_repos/
+*.log
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/.next-dev/
+frontend/out/
+
+# Misc
+.turbo/
+coverage/
+*.bak
+
+# Local runtime state and private data
+.env.*.local
+*.sqlite
+*.sqlite3
+backend/celerybeat-schedule
+backend/data/feedback_screenshots/
+backend/data/logs/
+backend/data/tmp/
+backend/data/temp/
+logs/
+tmp/
+temp/
+
+# Additional generated environments and package-manager caches
+.python-version.local
+.pdm-python
+.uv/
+.pyre/
+.pytype/
+.nox/
+.tox/
+.npm/
+.pnpm-store/
+.yarn/cache/
+frontend/next-env.d.ts
+
+# Generated TypeScript build metadata
+*.tsbuildinfo
