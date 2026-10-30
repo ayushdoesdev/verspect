@@ -45,6 +45,18 @@ The application screenshots show Verspect running locally with authenticated acc
 
   <p><a href="docs/assets/screenshots/app/dependency-analysis-detail.png"><img src="docs/assets/screenshots/app/dependency-analysis-detail.png" alt="Dependency detail page with health factors, upgrade advice, and the upgrade simulator running against a scanned package" width="100%" /></a></p>
 
+  **Upgrade simulation — Pydantic**
+
+  <p><a href="docs/assets/screenshots/app/upgrade-simulation-pydantic-in-progress.png"><img src="docs/assets/screenshots/app/upgrade-simulation-pydantic-in-progress.png" alt="Authenticated Pydantic upgrade simulation queued and waiting to start" width="100%" /></a></p>
+
+  **Upgrade simulation — Babel in progress**
+
+  <p><a href="docs/assets/screenshots/app/upgrade-simulation-babel-in-progress.png"><img src="docs/assets/screenshots/app/upgrade-simulation-babel-in-progress.png" alt="Authenticated Babel compatibility data upgrade simulation at the API usage analysis stage" width="100%" /></a></p>
+
+  **Upgrade simulation — Babel analysis results**
+
+  <p><a href="docs/assets/screenshots/app/upgrade-simulation-babel-results.png"><img src="docs/assets/screenshots/app/upgrade-simulation-babel-results.png" alt="Authenticated Babel compatibility data upgrade analysis showing readiness, risk, evidence coverage, and migration findings" width="100%" /></a></p>
+
   **Migration Assistant package selection**
 
   <p><a href="docs/assets/screenshots/app/migration-assistant.png"><img src="docs/assets/screenshots/app/migration-assistant.png" alt="Authenticated Migration Assistant page listing scanned dependencies available to open for migration analysis" width="100%" /></a></p>
