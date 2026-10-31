@@ -56,7 +56,7 @@ const screenshots = [
     alt: "Verspect Babel upgrade simulation results.",
   },
   {
-    src: "/screenshots/app/upgrade-simulation-pydantic-in-progress.png",
+    src: "/screenshots/app/pydantic-upgrade-simulation-in-progress.png",
     title: "Python package upgrade",
     description: "Review high-confidence patches and proposed changes for a Python package upgrade.",
     alt: "Verspect Python package upgrade patch preview with proposed repository code changes.",
