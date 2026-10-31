@@ -1,5 +1,3 @@
-"use client";
-
 import { ImageResponse } from "next/og";
 
 export const alt = "Verspect — Dependency intelligence for GitHub repositories";
