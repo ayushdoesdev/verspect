@@ -58,8 +58,8 @@ const screenshots = [
   {
     src: "/screenshots/app/upgrade-simulation-pydantic-in-progress.png",
     title: "Python package upgrade",
-    description: "See an upgrade simulation for a Python dependency.",
-    alt: "Verspect Pydantic upgrade simulation in progress.",
+    description: "Review high-confidence patches and proposed changes for a Python package upgrade.",
+    alt: "Verspect Python package upgrade patch preview with proposed repository code changes.",
   },
 ] as const;
 

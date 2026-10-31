@@ -14,12 +14,12 @@ export default function Home() {
       <MarketingNav />
       <main>
         <LandingHero />
+        <ProductGallerySection />
         <ScanDemoSection />
         <SimulatorDemoSection />
         <MigrationDemoSection />
         <DependencyGraphSection />
         <SecurityDashboardSection />
-        <ProductGallerySection />
         <RoadmapTeaserSection />
         <FaqSection />
         <FinalCtaSection />
