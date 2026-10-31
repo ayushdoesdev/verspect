@@ -114,3 +114,55 @@ def test_malformed_requirements_are_skipped(tmp_path: Path):
     names = {d.normalized_name for d in result.merged_by_name()}
     assert "requests" in names
     assert all("!!!" not in (d.package_name or "") for d in result.dependencies)
+
+
+def test_requirements_nested_repeated_and_circular_includes_are_safe(tmp_path: Path):
+    (tmp_path / "requirements.txt").write_text(
+        "-r nested/base.txt\n-r nested/base.txt\nrequests==2.32.0\n",
+        encoding="utf-8",
+    )
+    (tmp_path / "nested").mkdir()
+    (tmp_path / "nested/base.txt").write_text(
+        "-r ../requirements.txt\npytest==8.3.0\n", encoding="utf-8"
+    )
+
+    result = ManifestScanner(tmp_path).scan()
+    names = [dep.normalized_name for dep in result.dependencies]
+
+    assert names.count("requests") == 1
+    assert names.count("pytest") == 1
+
+
+def test_requirements_include_cannot_escape_repository(tmp_path: Path):
+    outside = tmp_path.parent / f"{tmp_path.name}-outside-requirements.txt"
+    outside.write_text("should-not-be-installed==1.0.0\n", encoding="utf-8")
+    try:
+        (tmp_path / "requirements.txt").write_text(
+            f"-r ../{outside.name}\nrequests==2.32.0\n", encoding="utf-8"
+        )
+
+        result = ManifestScanner(tmp_path).scan()
+        names = {dep.normalized_name for dep in result.dependencies}
+
+        assert "requests" in names
+        assert "should-not-be-installed" not in names
+    finally:
+        outside.unlink(missing_ok=True)
+
+
+def test_requirements_include_rejects_symlink_escape(tmp_path: Path):
+    outside = tmp_path.parent / f"{tmp_path.name}-outside-link.txt"
+    outside.write_text("should-not-be-installed==1.0.0\n", encoding="utf-8")
+    try:
+        (tmp_path / "requirements.txt").write_text(
+            "-r linked-requirements.txt\nrequests==2.32.0\n", encoding="utf-8"
+        )
+        (tmp_path / "linked-requirements.txt").symlink_to(outside)
+
+        result = ManifestScanner(tmp_path).scan()
+        names = {dep.normalized_name for dep in result.dependencies}
+
+        assert "requests" in names
+        assert "should-not-be-installed" not in names
+    finally:
+        outside.unlink(missing_ok=True)
