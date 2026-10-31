@@ -5,6 +5,7 @@ import { SimulatorDemoSection } from "@/components/marketing/landing/simulator-d
 import { MigrationDemoSection } from "@/components/marketing/landing/migration-demo";
 import { DependencyGraphSection } from "@/components/marketing/landing/dependency-graph";
 import { SecurityDashboardSection } from "@/components/marketing/landing/security-dashboard";
+import { ProductGallerySection } from "@/components/marketing/landing/product-gallery";
 import { FaqSection, FinalCtaSection, RoadmapTeaserSection } from "@/components/marketing/landing/social-sections";
 
 export default function Home() {
@@ -18,6 +19,7 @@ export default function Home() {
         <MigrationDemoSection />
         <DependencyGraphSection />
         <SecurityDashboardSection />
+        <ProductGallerySection />
         <RoadmapTeaserSection />
         <FaqSection />
         <FinalCtaSection />

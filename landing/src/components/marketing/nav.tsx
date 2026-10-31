@@ -10,6 +10,7 @@ const primaryLinks = [
   { href: "#scan-demo", label: "Product" },
   { href: "#simulator", label: "Simulator" },
   { href: "#migration", label: "Migration" },
+  { href: "#screenshots", label: "Gallery" },
   { href: "#faq", label: "FAQ" },
 ] as const;
 const moreLinks = [
@@ -104,6 +105,7 @@ export function MarketingFooter() {
       { href: "#scan-demo", label: "Repository scan" },
       { href: "#simulator", label: "Upgrade Simulator" },
       { href: "#migration", label: "Migration Assistant" },
+      { href: "#screenshots", label: "App screenshots" },
       { href: "#graph", label: "Dependency graph" },
       { href: "#faq", label: "FAQ" },
     ]},
