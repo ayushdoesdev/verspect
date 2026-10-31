@@ -82,7 +82,16 @@ class ManifestScanner:
     """Discover and parse Python dependency manifests in a repository tree."""
 
     def __init__(self, repo_path: str | Path) -> None:
-        self.repo_path = Path(repo_path)
+        self.repo_path = Path(repo_path).resolve()
+
+    def _resolve_in_repo(self, path: str | Path) -> Path | None:
+        """Resolve an existing path and reject paths outside the repository root."""
+        try:
+            resolved = Path(path).resolve(strict=True)
+            resolved.relative_to(self.repo_path)
+        except (OSError, RuntimeError, ValueError):
+            return None
+        return resolved
 
     def scan(self) -> ManifestScanResult:
         result = ManifestScanResult()
@@ -90,11 +99,12 @@ class ManifestScanner:
             logger.warning("repo_path_missing", path=str(self.repo_path))
             return result
 
+        visited_requirements: set[Path] = set()
         for path in self._discover_manifests():
             rel = str(path.relative_to(self.repo_path))
             result.files_found.append(rel)
             try:
-                deps = self._parse_file(path)
+                deps = self._parse_file(path, visited_requirements)
                 for d in deps:
                     d.manifest_source = rel
                 result.dependencies.extend(deps)
@@ -125,16 +135,21 @@ class ManifestScanner:
             if any(part in skip_dirs for part in path.parts):
                 continue
             name = path.name
-            if name in MANIFEST_NAMES:
-                found.append(path)
-            elif name.startswith("requirements") and name.endswith(".txt"):
+            is_manifest = name in MANIFEST_NAMES or (
+                name.startswith("requirements") and name.endswith(".txt")
+            )
+            if is_manifest and self._resolve_in_repo(path) is not None:
                 found.append(path)
         return sorted(found)
 
-    def _parse_file(self, path: Path) -> list[ParsedDependency]:
+    def _parse_file(
+        self,
+        path: Path,
+        visited_requirements: set[Path] | None = None,
+    ) -> list[ParsedDependency]:
         name = path.name
         if name.endswith(".txt") and "requirements" in name.lower():
-            return self._parse_requirements_txt(path)
+            return self._parse_requirements_txt(path, visited_requirements)
         if name == "pyproject.toml":
             return self._parse_pyproject(path)
         if name == "poetry.lock":
@@ -151,18 +166,31 @@ class ManifestScanner:
             return self._parse_setup_py(path)
         return []
 
-    def _parse_requirements_txt(self, path: Path) -> list[ParsedDependency]:
+    def _parse_requirements_txt(
+        self,
+        path: Path,
+        visited: set[Path] | None = None,
+    ) -> list[ParsedDependency]:
         deps: list[ParsedDependency] = []
-        is_dev = any(x in path.name.lower() for x in ("dev", "test", "lint"))
-        text = read_text_auto(path)
+        visited = visited if visited is not None else set()
+        resolved_path = self._resolve_in_repo(path)
+        if resolved_path is None or resolved_path in visited:
+            return []
+        visited.add(resolved_path)
+
+        is_dev = any(x in resolved_path.name.lower() for x in ("dev", "test", "lint"))
+        text = read_text_auto(resolved_path)
         for line in text.splitlines():
             # Handle nested -r includes
             stripped = line.strip()
             if stripped.startswith("-r ") or stripped.startswith("--requirement "):
                 include = stripped.split(maxsplit=1)[1]
-                include_path = (path.parent / include).resolve()
-                if include_path.exists() and self.repo_path in include_path.parents or include_path.parent == self.repo_path:
-                    deps.extend(self._parse_requirements_txt(include_path))
+                include_path = Path(include)
+                if not include_path.is_absolute():
+                    include_path = resolved_path.parent / include_path
+                resolved_include = self._resolve_in_repo(include_path)
+                if resolved_include is not None and resolved_include.is_file():
+                    deps.extend(self._parse_requirements_txt(resolved_include, visited))
                 continue
             parsed = parse_requirement_line(line)
             if not parsed:
