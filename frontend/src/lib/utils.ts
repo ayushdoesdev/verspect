@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatNumber(n: number | null | undefined): string {
-  if (n == null) return "—";
+  if (n == null || !Number.isFinite(n)) return "—";
   return new Intl.NumberFormat("en-US", { notation: "compact" }).format(n);
 }
 
